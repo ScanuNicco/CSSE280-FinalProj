@@ -1,0 +1,96 @@
+[
+    {
+        "idLocation": "211indiana-11",
+        "idAgency": 10,
+        "idService": 9907,
+        "idAddress": 533952,
+        "type": "physical",
+        "addr1": "731 Wagner Avenue",
+        "addr2": null,
+        "city": "Elkhart",
+        "region": "Elkhart",
+        "state_province": "IN",
+        "zipcode": 46516,
+        "country": "United States",
+        "name": "CHURCH WITHOUT WALLS",
+        "latitude": 41.674689,
+        "longitude": -85.96573,
+        "accessibility": "ADA Accessible",
+        "categories": {
+            "catName": "Basic Needs",
+            "subcatName": "Food",
+            "taxonomy": "BD-1800.2000",
+            "taxonName": "Food Pantries",
+            "targetTerm": null,
+            "targetTermName": null
+        },
+        "agency": {
+            "desc": "A church with worship services and charitable outreach, including a food pantry, and transitional housing.",
+            "url": "http://www.emergeministries.wordpress.com",
+            "legalStatus": "Nonprofit",
+            "verified": "2023-09-11T00:00:00"
+        }
+    },{
+        "idLocation": "211indiana-1731",
+        "idAgency": 1000,
+        "idService": 8932,
+        "idAddress": 389392,
+        "type": "physical",
+        "addr1": "9669 North County Road 350 West",
+        "addr2": null,
+        "city": "Milton",
+        "region": "Fayette",
+        "state_province": "IN",
+        "zipcode": 47357,
+        "country": "United States",
+        "name": "POSEY TOWNSHIP TRUSTEE - FAYETTE COUNTY",
+        "latitude": null,
+        "longitude": null,
+        "accessibility": "Not ADA accessible but will make arrangements",
+        "categories": {
+            "catName": "Basic Needs",
+            "subcatName": "Food",
+            "taxonomy": "BD-1800.2250",
+            "taxonName": "Food Vouchers",
+            "targetTerm": null,
+            "targetTermName": null
+        },
+        "agency": {
+            "desc": "An elected official responsible for administering the township, including such duties as providing township assistance, burial of the indigent, and maintaining the township budget.",
+            "url": null,
+            "legalStatus": "Government",
+            "verified": "2021-11-12T00:00:00"
+        }
+    },{
+        "idLocation": "211indiana-15961",
+        "idAgency": 10,
+        "idService": null,
+        "idAddress": null,
+        "type": "physical",
+        "addr1": "13476 West County Line Road",
+        "addr2": null,
+        "city": "Moores Hill",
+        "region": "Dearborn",
+        "state_province": "IN",
+        "zipcode": 47032,
+        "country": "United States",
+        "name": "SPARTA TOWNSHIP TRUSTEE - DEARBORN COUNTY",
+        "latitude": 39.067767,
+        "longitude": -85.043611,
+        "accessibility": "ADA Accessible",
+        "categories": {
+            "catName": "Basic Needs",
+            "subcatName": "Food",
+            "taxonomy": "BD-1800.2250",
+            "taxonName": "Food Vouchers",
+            "targetTerm": null,
+            "targetTermName": null
+        },
+        "agency": {
+            "desc": "An elected official responsible for administering the township, including such duties as providing township assistance, burial of the indigent, and maintaining the township budget.",
+            "url": null,
+            "legalStatus": "Government",
+            "verified": "2023-08-11T00:00:00"
+        }
+    }
+]

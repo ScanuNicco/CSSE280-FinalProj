@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Search | Rose Rideshares</title>
+        <link rel="icon" href="slowlane.png"></link>
+        <link rel="stylesheet" href="styles.css"></link>
+        <link rel="stylesheet" href="search.css"></link>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></link>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+	    <meta name="description" content="Search for a ride.">
+    </head>
+    <body>
+        <div class="headerBar">
+            <a href="/"><img src="logo.png"></a>
+        </div>
+        <div id="outerFilterCont">
+            <div id="viewSelector">
+                <img class="active" src="home.svg" onclick="showView(0)">
+                <img src="list.svg" onclick="showView(1)" class="">
+                <img src="map.svg" onclick="showView(2)">
+                <img id="filterButton" src="filter.svg" onclick="toggleFilter()">
+            </div>
+            <div id="filterCont" onclick="populateCurrentView()">
+            <h2>Filter Results</h2>
+            <div class="zipBox">
+                <button><img src="location.svg"></button><input id="zipIn" placeholder="Zip Code" oninput="filterZip = this.value; populateCurrentView();">
+            </div>
+            <div class="filtersList" id="mainFilterList">
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+                <div class="filterRow">
+                    <input type="checkBox">
+                    <span>Food Bank</span>
+                </div>
+            </div>
+            <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
+        </div>
+            <div id="rideViewsCont">
+                <div id="homeCont">
+                    <h2>Welcome to Indiana 2-1-1</h2>
+                    <p>Are you looking for assistance with food, housing, or child care? You can use this helpful tool to narrow your search.</p>
+                    <img class="welcomeImg" src="lady-holding-baby.jpg" alt="Lady Holding a Baby">
+                </div>
+                <div id="listCont"></div>
+                <div id="mapCont">
+                    <div id="map"></div>
+                </div>
+            </div>
+        <div id="modalBackground">
+            <button id="close" onclick="closeModal()">&times;</button>
+            <div id="modal">
+                <h1 id="infoModalHeader">Ride Request for ___</h1>
+                <div id="statusBox">
+                    <div id="statusLabel">Status:</div>
+                    <div id="statusContent"></div>
+                </div>
+                <table>
+                    <tr><td class="label">Address:</td><td id="addr"></td></tr>
+                    <tr><td class="label">Category:</td><td id="cat"></td></tr>
+                    <tr><td class="label">Description:</td><td id="desc"></td></tr>
+                    <tr><td class="label">Contact:</td><td id="contact"></td></tr>
+                    <tr><td class="label">Type:</td><td id="type"></td></tr>
+                </table>
+                <a id="gmLink">
+                    <button class="bigGlowyButton">Directions</button>
+                </a>
+            </div>
+        </div>
+        <script src="/fullcalendar/dist/index.global.min.js"></script>
+        <script src="shared.js"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
+        <script>
+                const RESOURCES_URL = "resources.json";
+
+                var q;
+                var resources;
+                var map;
+                var mlg;
+                var oms;
+                var cats = {};
+                var filterZip = "";
+
+                window.onload = async function() {
+                    await fetchResources();
+
+                    //Populate categories and results
+                    html = "";
+
+                    map = L.map('map').setView([39.48292, -88], 7);
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 20,
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        detectRetina: true
+                    }).addTo(map);
+
+                    mlg = L.layerGroup().addTo(map);
+
+                    oms = new OverlappingMarkerSpiderfier(map);
+                    oms.addListener('click', showResFromMarker);
+
+                    resetFilter();
+                    displayResources(generateHTML);
+                }
+
+                async function fetchResources() {
+                    var response = await fetch(RESOURCES_URL);
+                    var result = await response.json();
+                    console.log(result);
+                    resources = result;
+                    genCats();
+                }
+
+                var listHTML;
+                function showList() {
+                    console.log("Hello");
+                    listHTML = "";
+                    displayResources(generateHTML);
+                    if(listHTML == ""){ //There were no rides
+                            listHTML = "<div id='lhCont'><img src='noRides.svg' class='lighthouse'></img></div>";
+                    }
+                    document.getElementById("listCont").innerHTML = listHTML;
+                    console.log("Hello");
+                }
+
+                function generateHTML(ind, res) {
+                    listHTML += `<div class='resourceRow' onclick="showDetails(${ind})"><div id="leftCol"><h3>${formatNames(resources[ind].name)}</h3><span class='listLoc'>${res.city}</span></div>`;
+                }
+
+                function displayResources(handler) {
+                    for(ind in resources) {
+                        if(passesFilters(resources[ind])){
+                            handler(ind, resources[ind]);
+                        }
+                    }
+                }
+
+                function formatNames(string) {
+                    var words = string.split(" ");
+                    for(i in words) {
+                        var word = words[i];
+                        word = word.toLowerCase();
+                        word = word.charAt(0).toUpperCase() + word.substring(1);
+                        words[i] = word;
+                    }
+                    string = words.join(" ");
+                    if(string.length > 50) {
+                        return string.substring(0, 22) + "...";
+                    }
+                    return string;
+                }
+
+                function passesFilters(res) {
+                    return cats[res.categories.taxonName].enabled && (res.zipcode == filterZip || filterZip.length != 5);
+                }
+
+                function showDetails(res) {
+                    var r = resources[res];
+                    document.getElementById("infoModalHeader").innerText = r.name;
+                    var addrString  = `${r.addr1} ${r.addr2 ?? ""}, ${r.city} ${r.state_province}, ${r.zipcode}`;
+                    document.getElementById("addr").innerText = addrString;
+                    document.getElementById("cat").innerText = r.categories.taxonName;
+                    document.getElementById("desc").innerText = r.agency.desc;
+                    document.getElementById("contact").innerHTML = r.agency.url != null ? `<a href="${r.agency.url}">${r.agency.url}</a>` : "";
+                    document.getElementById("type").innerText = r.agency.legalStatus;
+                    document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
+                    openModal();
+                }
+
+                function closeModal() {
+                    document.getElementById("modalBackground").style.top = "100vh";
+                    document.getElementById("modalBackground").style.borderRadius = "100px";
+                }
+
+                function openModal() {
+                    document.getElementById("modalBackground").style.top = "0vh";
+                    document.getElementById("modalBackground").style.borderRadius = "0px";
+                }
+
+                function resetFilter() {
+                    var boxes = document.getElementById("mainFilterList").querySelectorAll("input[type=checkbox]"); 
+                    for(box in boxes) {
+                        boxes[box].checked = true;
+                    }
+                    for(cat in cats) {
+                        cats[cat].enabled = true;
+                    }
+                    populateCurrentView();
+                }
+
+                var views = [{id: "homeCont", setup: showHome}, {id: "listCont", setup: showList}, {id: "mapCont", setup: showMap}]; //Add view IDs to this list in the order the appear in the selector
+                var currentView = 0;
+                function showView(id) {
+                    var viewSelectCont = document.getElementById("viewSelector");
+                    for(var i = 0; i < views.length; i++){
+                        document.getElementById(views[i].id).style.display = "none";
+                        viewSelectCont.children[i].classList.remove("active");
+                    }
+                    document.getElementById(views[id].id).style.display = "block";
+                    viewSelectCont.children[id].classList.add("active");
+                    views[id].setup();
+                    currentView = id;
+                }
+
+                function populateCurrentView() {
+                    views[currentView].setup();
+                }
+
+                function showMap() {
+                    map.invalidateSize();
+                    oms.clearMarkers();
+                    mlg.clearLayers();
+                    displayResources(mapGenerator);
+                }
+
+                function mapGenerator(ind, res) {
+                    if(res.latitude != null && res.longitude != null){
+                        var coords = [res.latitude, res.longitude];
+                        var marker = L.marker(coords).addTo(mlg);
+                        marker.resInd = ind;
+                        marker._icon.style.filter = `hue-rotate(${cats[res.categories.taxonName].hue - 210}deg)`;
+                        oms.addMarker(marker);
+                    }
+                }
+
+                function showResFromMarker(marker){
+                    showDetails(marker.resInd);
+                }
+
+                function toggleFilter() {
+                    var filterCont = document.getElementById("filterCont");
+                    var filterButton = document.getElementById("filterButton");
+                    if(filterCont.style.display != "flex"){
+                        filterCont.style.display = "flex"
+                        filterButton.classList.add("active");
+                    } else {
+                        filterCont.style.display = "none"
+                        filterButton.classList.remove("active");
+                    }
+                }
+
+                var pinsAtDest = true;
+                function originPins() {
+                    var mapToggle = document.getElementById("mapToggle");
+                    mapToggle.children[0].classList.add("map-tab-active");
+                    mapToggle.children[1].classList.remove("map-tab-active");
+                    pinsAtDest = false;
+                    populateCurrentView();
+                }
+
+                function destPins() {
+                    var mapToggle = document.getElementById("mapToggle");
+                    mapToggle.children[1].classList.add("map-tab-active");
+                    mapToggle.children[0].classList.remove("map-tab-active");
+                    pinsAtDest = true;
+                    populateCurrentView();
+                }
+
+                function showHome() {
+
+                }
+
+                function genCats() {
+                    for(resource of resources) {
+                        if(!cats.hasOwnProperty(resource.categories.taxonName)){
+                            cats[resource.categories.taxonName] = {taxonCode: resource.categories.taxonomy};
+                        }
+                    }
+                    //Now we know how many there are
+                    var numCats = Object.keys(cats).length;
+                    var colorJump = 360/numCats;
+                    var html = "";
+                    for(var i = 0; i < numCats; i++) {
+                        var cat = Object.keys(cats)[i];
+                        console.log(cats);
+                        cats[cat].color = `hsl(${i*colorJump}, 62%, 60.8%)`;
+                        cats[cat].hue = i*colorJump;
+                        html += `<div class="filterRow">
+                                    <input type="checkBox" style="--ck-inactive-color: hsl(${i*colorJump}, 20%, 50%); --ck-active-color: hsl(${i*colorJump}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}')">
+                                    <span>${cat}</span>
+                                </div>`;
+                    }
+                    document.getElementById("mainFilterList").innerHTML = html;
+                }
+
+                function toggleCategory(elem, cat) {
+                    cats[cat].enabled = elem.checked;
+                }
+            </script>
+        </body>
+    </html>
