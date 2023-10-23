@@ -26,50 +26,10 @@
                 <button><img src="location.svg"></button><input id="zipIn" placeholder="Zip Code" oninput="filterZip = this.value; populateCurrentView();">
             </div>
             <div class="filtersList" id="mainFilterList">
-                <div class="filterRow">
+                <!-- <div class="filterRow">
                     <input type="checkBox">
                     <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
-                <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div>
+                </div> -->
             </div>
             <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
         </div>
@@ -83,24 +43,57 @@
                 <div id="mapCont">
                     <div id="map"></div> -->
                     <div id="homeCont">
-                    <section class="hero">
+                    <section class="hero" id="welcomeTop" style="margin: 10px 50px;">
                         <div class="intro-text">
                           <h1>
-                            <span class="Welcome"> Welcome to Indiana</span> <br />
-                            <span class="2-1-1">2-1-1</span>
+                            <span class="2-1-1">Welcome To</span><br>
+                            <span class="welcome">Indiana 211</span> <br />
                           </h1>
                           <p>
-                            Are you looking for assistance with food, housing, or child care? You can use this helpful tool to narrow your search
+                            Are you looking for assistance with food, housing, or child care? You can use this helpful tool to turbocharge your search
                           </p>
     
                         </div>
-                        <div class="i-frame">
-                            <img class="welcomeImg" src="lady-holding-baby.jpg" alt="Lady Holding a Baby">
-            
+                        <img class="welcomeImg" src="lady-holding-baby.jpg" alt="Lady Holding a Baby">
+                      </section>
+                      <section class="hero">
+                        <div class="tipIcon">
+                            <img src="homepage_findmap.svg">
+                        </div>
+                        <div class="intro-text">
+                            <h2>Find Assistance Near Your Location</h2>
+                            <span>Indiana 211 can help you find assistance in your community. Use the map view on this website to see what is available near you!</span><br>
+                            <button class="smolGlowyButton" onclick="showView(2)">Open Map View</button>
+                        </div>
+                      </section>
+                      <section class="hero">
+                        <div class="tipIcon">
+                            <img src="homepage_findlist.svg" style="background: rgb(190, 223, 185)">
+                        </div>
+                        <div class="intro-text">
+                            <h2>Print a List of Resources</h2>
+                            <span>You can use the list view to print out a list of resources for you to use.</span><br>
+                            <button class="smolGlowyButton"  onclick="showView(1)">Open List View</button>
+                        </div>
+                      </section>
+                      <section class="hero">
+                        <div class="tipIcon">
+                            <img src="homepage_filter.svg"  style="background: rgb(190, 185, 223);">
+                        </div>
+                        <div class="intro-text">
+                            <h2>Refine you Search</h2>
+                            <span>Use filters to narrow your results to specific locations or categories.</span><br>
+                            <button class="smolGlowyButton" onclick="showView(2); toggleFilter();">Open Filters</button>
                         </div>
                       </section>
                     </div>
-                      <div id="listCont"></div>
+                      <div id="listCont">
+                        <div class="topActionRow">
+                            <button class="smolGlowyButton">Print Results</button>
+                        </div>
+                        <div id="rowsCont">
+                        </div>
+                      </div>
                       <div id="mapCont">
                           <div id="map"></div> 
                 </div>
@@ -178,12 +171,12 @@
                     if(listHTML == ""){ //There were no rides
                             listHTML = "<div id='lhCont'><img src='noRides.svg' class='lighthouse'></img></div>";
                     }
-                    document.getElementById("listCont").innerHTML = listHTML;
+                    document.getElementById("rowsCont").innerHTML = listHTML;
                     console.log("Hello");
                 }
 
                 function generateHTML(ind, res) {
-                    listHTML += `<div class='resourceRow' onclick="showDetails(${ind})"><div id="leftCol"><h3>${formatNames(resources[ind].name)}</h3><span class='listLoc'>${res.city}</span></div>`;
+                    listHTML += `<div class='resourceRow' onclick="showDetails(${ind})"><div id="leftCol"><h3>${formatNames(resources[ind].name)}</h3><span class='listLoc'>${res.city}</span></div></div>`;
                 }
 
                 function displayResources(handler) {

@@ -52,10 +52,8 @@
                     padding: 0px;
                 }
 
-                #tilesCont {
-                    display: flex;
-                    flex-wrap: wrap;
-                    width: 100%;
+                #listCont {
+                    display: none;
                 }
 
                 #filterCont {
@@ -412,9 +410,40 @@
                 }
 
                 .welcomeImg {
-                    width: 50vw;
+                    width: 450px;
                     margin: 10px;
                     border-radius: 5px;
+                    flex-shrink: 1;
+                    min-width: 300px;
+                }
+
+                #listCont {
+                    margin-left: 20px;
+                }
+
+                .resourceRow {
+                    transition: .2s;
+                    width: calc(100% - 40px);
+                    margin: 5px 0px;
+                    padding: 10px;
+                    border-radius: 10px;
+                }
+
+                .resourceRow:hover {
+                    background: #ddd;
+                }
+
+                .resourceRow h3 {
+                    margin: 4px 0px;
+                }
+
+                .topActionRow {
+                    display: flex;
+                    justify-content: right;
+                }
+
+                .topActionRow button {
+                    margin: 10px;
                 }
 
                 @media screen and (max-width: 600px) {
@@ -522,4 +551,12 @@
                     #zipIn {
                         width: 100%;
                     }
+
+                    #welcomeTop {
+                        flex-wrap: wrap;
+                    }
+
+                    .tipIcon img {
+                        width: 30vw;
+                        margin: 10px;
                 }
