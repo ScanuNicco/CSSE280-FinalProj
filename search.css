@@ -443,11 +443,11 @@
                         left: 0px;
                         width: calc(100% - 30px);
                         height: 100%;
-                        background: #313131;
+                        background: #ddd;
                         text-align: center;
                         margin: 116px 0px;
                         border-radius: 0px;
-                        z-index: 100;
+                        z-index: 1001;
                         box-shadow: 3px 0px 3px rgba(0, 0, 0, .5);
                     }
 
@@ -517,5 +517,9 @@
 
                     .fc-button-group{
                         margin-left: .2em !important;
+                    }
+
+                    #zipIn {
+                        width: 100%;
                     }
                 }
