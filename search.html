@@ -123,7 +123,7 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
         <script>
-                const RESOURCES_URL = "resources.json";
+                const RESOURCES_URL = "realResources.json";
 
                 var q;
                 var resources;
@@ -176,12 +176,12 @@
                 }
 
                 function generateHTML(ind, res) {
-                    listHTML += `<div class='resourceRow' onclick="showDetails(${ind})"><div id="leftCol"><h3>${formatNames(resources[ind].name)}</h3><span class='listLoc'>${res.city}</span></div></div>`;
+                    listHTML += `<div class='resourceRow' onclick="showDetails(${ind})"><div id="leftCol"><h3>${formatNames(resources[ind].agency_name)}</h3><span class='listLoc'>${res.city}</span></div></div>`;
                 }
 
                 function displayResources(handler) {
-                    for(ind in resources) {
-                        if(passesFilters(resources[ind])){
+                    for(var ind = 0; ind < resources.length; ind++) {
+                        if(passesFilters(resources[ind]) && ind < 1500){
                             handler(ind, resources[ind]);
                         }
                     }
@@ -203,18 +203,17 @@
                 }
 
                 function passesFilters(res) {
-                    return cats[res.categories.taxonName].enabled && (res.zipcode == filterZip || filterZip.length != 5);
+                    return cats[res.taxonomy_category].enabled && (res.zipcode == filterZip || filterZip.length != 5);
                 }
 
                 function showDetails(res) {
                     var r = resources[res];
-                    document.getElementById("infoModalHeader").innerText = r.name;
-                    var addrString  = `${r.addr1} ${r.addr2 ?? ""}, ${r.city} ${r.state_province}, ${r.zipcode}`;
+                    document.getElementById("infoModalHeader").innerText = r.agency_name;
+                    var addrString  = `${r.address_1} ${r.address_2 ?? ""}, ${r.city} ${r.state_province}, ${r.zipcode}`;
                     document.getElementById("addr").innerText = addrString;
-                    document.getElementById("cat").innerText = r.categories.taxonName;
-                    document.getElementById("desc").innerText = r.agency.desc;
-                    document.getElementById("contact").innerHTML = r.agency.url != null ? `<a href="${r.agency.url}">${r.agency.url}</a>` : "";
-                    document.getElementById("type").innerText = r.agency.legalStatus;
+                    document.getElementById("cat").innerText = r.taxonomy_category;
+                    document.getElementById("desc").innerText = r.agency_desc;
+                    document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
                     openModal();
                 }
@@ -270,7 +269,7 @@
                         var coords = [res.latitude, res.longitude];
                         var marker = L.marker(coords).addTo(mlg);
                         marker.resInd = ind;
-                        marker._icon.style.filter = `hue-rotate(${cats[res.categories.taxonName].hue - 210}deg)`;
+                        marker._icon.style.filter = `hue-rotate(${cats[res.taxonomy_category].hue - 210}deg)`;
                         oms.addMarker(marker);
                     }
                 }
@@ -291,31 +290,14 @@
                     }
                 }
 
-                var pinsAtDest = true;
-                function originPins() {
-                    var mapToggle = document.getElementById("mapToggle");
-                    mapToggle.children[0].classList.add("map-tab-active");
-                    mapToggle.children[1].classList.remove("map-tab-active");
-                    pinsAtDest = false;
-                    populateCurrentView();
-                }
-
-                function destPins() {
-                    var mapToggle = document.getElementById("mapToggle");
-                    mapToggle.children[1].classList.add("map-tab-active");
-                    mapToggle.children[0].classList.remove("map-tab-active");
-                    pinsAtDest = true;
-                    populateCurrentView();
-                }
-
                 function showHome() {
 
                 }
 
                 function genCats() {
                     for(resource of resources) {
-                        if(!cats.hasOwnProperty(resource.categories.taxonName)){
-                            cats[resource.categories.taxonName] = {taxonCode: resource.categories.taxonomy};
+                        if(!cats.hasOwnProperty(resource.taxonomy_category)){
+                            cats[resource.taxonomy_category] = {taxonCode: resource.taxonomy_code};
                         }
                     }
                     //Now we know how many there are
@@ -337,6 +319,7 @@
 
                 function toggleCategory(elem, cat) {
                     cats[cat].enabled = elem.checked;
+                    populateCurrentView();
                 }
             </script>
         </body>
