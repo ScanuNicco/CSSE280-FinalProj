@@ -10,6 +10,12 @@
 	    <meta name="description" content="Search for a service.">
     </head>
     <body>
+        <div id="countyBlocker">
+            <div id="countiesListCont">
+                <input id="countySearch" placeholder="Select a County" oninput="displayCounties()"></input>
+                <div id="countiesList"></div>
+            </div>
+        </div>
         <div class="headerBar">
             <a href="/"><img src="logo.png"></a>
         </div>
@@ -124,17 +130,19 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
         <script>
                 const RESOURCES_URL = "realResources.json";
+                const COUNTIES_LIST_URL = "countyList.json";
 
                 var q;
-                var resources;
+                var resources = [];
                 var map;
                 var mlg;
                 var oms;
                 var cats = {};
                 var filterZip = "";
+                var counties;
 
                 window.onload = async function() {
-                    await fetchResources();
+                    await fetchCounties();
 
                     //Populate categories and results
                     html = "";
@@ -155,12 +163,29 @@
                     displayResources(generateHTML);
                 }
 
-                async function fetchResources() {
-                    var response = await fetch(RESOURCES_URL);
-                    var result = await response.json();
-                    console.log(result);
-                    resources = result;
+                async function fetchCounties() {
+                    var response = await fetch(COUNTIES_LIST_URL);
+                    counties = await response.json();
+                    displayCounties();
+                }
+
+                function displayCounties() {
+                    var query = document.getElementById("countySearch").value;
+                    var html = "";
+                    for(county in counties) {
+                        if(query.length <= 0 || county.toLowerCase().includes(query.toLowerCase())) {
+                            html += `<div class='county' onclick='selectCounty("${county}")'>${county}</div>`;
+                        }
+                    }
+                    document.getElementById("countiesList").innerHTML = html;
+                }
+
+                async function selectCounty(county) {
+                    var response = await fetch(counties[county]);
+                    resources = await response.json();
                     genCats();
+                    resetFilter();
+                    document.getElementById("countyBlocker").style.display = "none";
                 }
 
                 var listHTML;
@@ -306,7 +331,6 @@
                     var html = "";
                     for(var i = 0; i < numCats; i++) {
                         var cat = Object.keys(cats)[i];
-                        console.log(cats);
                         cats[cat].color = `hsl(${i*colorJump}, 62%, 60.8%)`;
                         cats[cat].hue = i*colorJump;
                         html += `<div class="filterRow">
