@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="headerBar">
-            <a href="/"><img src="logo.png"></a>
+            <a href="/"><img src="logo.png"></a><div id="countyDisplay" onclick="displayCounties()">County</div>
         </div>
         <div id="outerFilterCont">
             <div id="viewSelector">
@@ -117,7 +117,8 @@
                     <tr><td class="label">Category:</td><td id="cat"></td></tr>
                     <tr><td class="label">Description:</td><td id="desc"></td></tr>
                     <tr><td class="label">Contact:</td><td id="contact"></td></tr>
-                    <tr><td class="label">Type:</td><td id="type"></td></tr>
+                    <tr><td class="label">Operating Hours:</td><td id="hours"></td></tr>
+                    <tr><td class="label">Target Group:</td><td id="elgibility"></td></tr>
                 </table>
                 <a id="gmLink">
                     <button class="bigGlowyButton">Directions</button>
@@ -170,6 +171,7 @@
                 }
 
                 function displayCounties() {
+                    document.getElementById("countyBlocker").style.display = "flex";
                     var query = document.getElementById("countySearch").value;
                     var html = "";
                     for(county in counties) {
@@ -186,6 +188,7 @@
                     genCats();
                     resetFilter();
                     document.getElementById("countyBlocker").style.display = "none";
+                    document.getElementById("countyDisplay").innerText = county;
                 }
 
                 var listHTML;
@@ -235,11 +238,19 @@
                     var r = resources[res];
                     document.getElementById("infoModalHeader").innerText = r.agency_name;
                     var addrString  = `${r.address_1} ${r.address_2 ?? ""}, ${r.city} ${r.state_province}, ${r.zipcode}`;
+                    if(r.city.length <= 0|| r.state_province.length <= 0 || r.address_1.length < 0) {
+                        addrString = "N/A";
+                        document.getElementById("gmLink").style.display = "none";
+                    } else {
+                        document.getElementById("gmLink").style.display = "initial";
+                    }
                     document.getElementById("addr").innerText = addrString;
                     document.getElementById("cat").innerText = r.taxonomy_category;
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
+                    document.getElementById("hours").innerText = r.site_schedule;
+                    document.getElementById("elgibility").innerText = r.site_eligibility ?? "All";
                     openModal();
                 }
 

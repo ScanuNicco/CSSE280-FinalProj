@@ -453,7 +453,7 @@
                     position: fixed;
                     height: 100vh;
                     width: 100vw;
-                    z-index: 100;
+                    z-index: 1000000;
                     background: #aaa5;
                     backdrop-filter: blur(15px);
                     display: flex;
@@ -493,6 +493,19 @@
 
                 .county:hover {
                     background-color: #1111;
+                }
+
+                #countyDisplay {
+                    margin: 10px;
+                    flex-grow: 1;
+                    background: #ccc;
+                    border-radius: 5px;
+                    font-size: 20pt;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    padding: 5px 20px;
+                    justify-content: center;
                 }
                 @media screen and (max-width: 600px) {
                     .headerBar button img {
@@ -601,8 +614,13 @@
                         width: 100%;
                     }
 
+                    .welcome {
+                        font-size: 3rem;
+                    }
+
                     #welcomeTop {
                         flex-wrap: wrap;
+                        margin: 10px !important;
                     }
 
                     .tipIcon img {
@@ -612,5 +630,14 @@
 
                     #close {
                         color: #111;
+                    }
+
+                    #countyDisplay {
+                        font-size: 14pt;
+                        line-height: .9;
+                        font-weight: 300;
+                        padding: 2px;
+                        margin: 5px;
+                        text-align: center;
                     }
                 }

@@ -9,6 +9,8 @@ async function generateData() {
   for(item of data) {
     if(item.county == null || item.county.length <= 0){
       item.county = "Online_Services";
+    } else if(item.state_province != "IN"){
+      item.county = "Out_Of_State";
     }
     if(!countyData.hasOwnProperty(item.county)) {
       countyData[item.county] = [];
@@ -22,8 +24,14 @@ async function generateData() {
   var countyURLS = {};
   for(county in countyData) {
     var url = "/resourcesData/" + county + ".json";
+    var displayName = county + " County";
+    if(county == "Out_Of_State") {
+      displayName = "Out of State";
+    } else if(county == "Online_Services") {
+      displayName = "Online Services";
+    }
     await fs.writeFile("public" + url, JSON.stringify(countyData[county]));
-    countyURLS[county] = url;
+    countyURLS[displayName] = url;
   }
   await fs.writeFile("public/countyList.json", JSON.stringify(countyURLS));
 }
