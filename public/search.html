@@ -346,7 +346,7 @@
                         cats[cat].hue = i*colorJump;
                         html += `<div class="filterRow">
                                     <input type="checkBox" style="--ck-inactive-color: hsl(${i*colorJump}, 20%, 50%); --ck-active-color: hsl(${i*colorJump}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}')">
-                                    <span>${cat}</span>
+                                    <span>${cat.replaceAll("/", "/ ")}</span>
                                 </div>`;
                     }
                     document.getElementById("mainFilterList").innerHTML = html;
