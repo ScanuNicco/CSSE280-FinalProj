@@ -10,10 +10,16 @@
 	    <meta name="description" content="Search for a service.">
     </head>
     <body>
+        
         <div id="countyBlocker">
+            
             <div id="countiesListCont">
+             <p id="load"></p>
                 <input id="countySearch" placeholder="Select a County" oninput="displayCounties()"></input>
-                <div id="countiesList"></div>
+                
+                <div id="countiesList">
+                    
+                </div>
             </div>
         </div>
         <div class="headerBar">
@@ -356,6 +362,34 @@
                     cats[cat].enabled = elem.checked;
                     populateCurrentView();
                 }
+
+
+                var i = 0;
+                let dot0 = "Loading";
+                let dot1 = "Loading.";
+                let dot2 = "Loading..";
+                let dot3 = "Loading...";
+setInterval(function() {
+   let message = "";
+   if (i ==0 ){
+    message = dot0;
+   }
+   if (i == 1){
+    message = dot1;
+   }
+   else if (i == 2){
+    message = dot2;
+   }
+   
+  else if (i ==3){
+    message = dot3;
+   }
+   
+   
+    i = i + 1;
+    document.querySelector("#load").innerHTML = `${message}`;
+    if (i == 4) i = 0;
+}, 1000);
             </script>
         </body>
     </html>
