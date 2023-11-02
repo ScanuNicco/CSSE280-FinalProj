@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      .center {
+  margin: auto;
+  width: 60%;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+      }
+      
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      </style>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+     <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js' integrity='sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A==' crossorigin='anonymous'></script>
+
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js' integrity='sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==' crossorigin='anonymous'></script>
+     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap-grid.css' integrity='sha512-clLQSgeWL8eBnDa3/d6YLxnDxZWJyMTpnJZ1dr4/UEkQdaHR4k4NzU7iX7KRn61kY8+AB457oV6cF1btaf9TUg==' crossorigin='anonymous'/>
+      <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css' integrity='sha512-AZtJoEn5SfSZimv10x5NMO2gaZCdoU8nxtHJK8O4SbKNlQeb1ggkvf0b0QixuuXIjX3Tp5jzBbTWajki81Vl2g==' crossorigin='anonymous'/>
+      
+      <link rel='stylesheet' href ="styles/main.css">
+      <title>Media</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title> -->
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/10.4.0/firebase-app-compat.js"></script>
+
+    <!-- include only the Firebase features as you need -->
+    <!-- <script defer src="/__/firebase/10.4.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/10.4.0/firebase-performance-compat.js"></script> -->
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+   <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+ <!-- 
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+  </head> -->
+  <!-- <script src = "scripts/main.js"></script> -->
+  <body>
+    <!-- <div id="message">
+      <h2>Welcome</h2>
+      <h1>Firebase Hosting Setup Complete</h1>
+      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
+      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+    </div>
+    <p id="load">Firebase SDK Loading&hellip;</p>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const loadEl = document.querySelector('#load');
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.firestore().doc('/foo/bar').get().then(() => { });
+        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        // firebase.analytics(); // call to activate
+        // firebase.analytics().logEvent('tutorial_completed');
+        // firebase.performance(); // call to activate
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = [
+            'auth', 
+            'database', 
+            'firestore',
+            'functions',
+            'messaging', 
+            'storage', 
+            'analytics', 
+            'remoteConfig',
+            'performance',
+          ].filter(feature => typeof app[feature] === 'function');
+          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
+        } catch (e) {
+          console.error(e);
+          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script> -->
+
+    <!-- <nav class="navbar navbar-expand-sm" style="background-color: #800000;">
+    
+      
+    <a class="navbar-brand" href="#">Home</a>
+      <a class="navbar-brand" href="#">Portfolio</a>
+      <a class="navbar-brand" href="#">Contact</a>
+     
+      
+    </nav> -->
+   
+  
+    <p id="body"> 
+<!-- <p> Loading....</p>
+    <div class="loader "></div> -->
+  </p>
+  <button id="printButton">Print</button>
+  <div id="contentToPrint" style="display: none;">
+      <!-- This is the content you want to print -->
+      <h1>Print this content</h1>
+      <p>testtestsetsest</p>
+  </div>
+  
+
+    
+  
+  </div>
+
+  
+  <div id="displaySection" style = "display:block"> 
+<p id="demo"></p>
+</div>
+<script>
+//   const DATA_IN_LOCATION = "resources.json"
+//   // var buffer =  fs.readFile(DATA_IN_LOCATION);
+// const dbParam = JSON.stringify({table:"idLocation",limit:20});
+// const xmlhttp = new XMLHttpRequest();
+// xmlhttp.onload = function() {
+//   const myObj = JSON.parse(this.responseText);
+//   let text = "<table border='1'>"
+//   for (let x in myObj) {
+//     text += "<tr><td>" + myObj[x].name + "</td></tr>";
+//   }
+//   text += "</table>"    
+//   document.getElementById("body").innerHTML = text;
+// }
+// xmlhttp.open("POST", "json_demo_html_table.php");
+// xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+// xmlhttp.send("x=" + dbParam);
+
+fetch("resources.json")
+.then(function(response){
+  return response.json();
+})
+.then(function(items){
+  let placeholder = document.querySelector("#demo");
+  let out = "";
+  for (let item of items){
+    out +=`
+    <h4> ${item.name}</h4>
+    <p> City: ${item.city}</p>
+    <p> address: ${item.addr1}</p>
+    <p> zipcode: ${item.zipcode}</p>
+    <p> type: ${item.type}</p>
+    <p>${item.region}</p>
+    <hr>`;
+  }
+
+  placeholder.innerHTML = out;
+})
+document.getElementById("printButton").addEventListener("click", function () {
+               // Hide the display section
+
+               console.log("test");
+//                let p =   document.getElementById("contentToPrint");
+//                console.log(p);
+//                document.getElementById("contentToPrint").style.display = "none";
+
+// // Show the print section
+// document.getElementById("#printSection").style.display = "block";
+
+// // Print the content
+// window.print();
+
+// // Reset the visibility after printing
+// document.getElementById("displaySection").style.display = "block";
+// document.getElementById("printSection").style.display = "none"
+var contentToPrint = document.getElementById("contentToPrint");
+            var printWindow = window.open('', '', 'width=600,height=600');
+
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>Printed Page</title></head><body>');
+             
+            printWindow.document.write(contentToPrint.innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+            printWindow.close();
+        });
+</script>
+    <!-- <div id="mainPage" class = "container page-container">
+      <hr>
+      
+      <h2>Favorite Number:</h2>
+      
+      <div id="counterText">0</div>
+    
+      
+      <div class="button-group row gx-3 ">
+       
+       
+        <div class = "col-md-2 col-lg-2  col-3 ">
+          
+      <button id="decrementButton" type="button" class="btn btn-primary btn-block " style="background-color: #800000 ">-1</button>
+      
+    </div>
+    <div class = "col-md-2 col-lg-2 col-3">
+     
+      <button id = "resetButton" type="button" class="btn btn-primary btn-block"style="background-color: #800000 ">Reseet</button>
+    </div>
+    <div class = "col-md-2 col-lg-2  col-3">
+      <button id="incrementButton" type="button" class="btn btn-primary btn-block"style="background-color: #800000 ">+1</button> 
+    </div>
+    
+    </div>
+    
+    
+    
+    
+    <hr>
+    
+    <h2>Favorite Color:</h2>
+    
+    <div class = "mx-auto" id = "favoriteColorContainer"><div class = "box" id="favoriteColorBox">#800000</div></div>
+    
+    
+    
+    
+    <div class="button-group2 row-no-gutters row">
+      <div class = "col-md-2 col-lg-2   col-3" >
+      <button id="blueButton" type="button" class="btn btn-primary btn-block " style="background-color: #0000ff; color: white; margin: 1px">Blue</button>
+    </div>
+    <div class = "col-md-2 col-lg-2  col-3">
+      <button id="greenButton" type="button" class="btn btn-primary btn-block" style="background-color: #008000;color: white; margin: 1px">Green</button> 
+    </div>
+    <div class = "col-md-2 col-lg-2  col-3">
+      <button id = "redButton" type="button" class="btn btn-primary btn-block" style="background-color: #ff0000;color: white; margin: 1px">Red</button>
+    </div>
+    <div class = "col-md-2 col-lg-2  col-3">
+      <button id="purpleButton" type="button"class="btn btn-primary btn-block" style="background-color: #800080 ;color: white; margin: 1px">Purple</button>
+    </div>
+    
+    </div>
+    <hr>
+    </div>
+       -->
+    </div>
+    
+    
+    
+            
+         
+    
+          <script src="scripts/main.js" async defer></script>
+  </body>
+</html>
