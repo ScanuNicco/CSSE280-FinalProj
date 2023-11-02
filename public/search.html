@@ -10,7 +10,11 @@
 	    <meta name="description" content="Search for a service.">
     </head>
     <body>
-        
+        <div id="contentToPrint" style="display: none;">
+            <!-- This is the content you want to print -->
+            <h1>Print this content</h1>
+            <p>testtestsetsest</p>
+        </div>
         <div id="countyBlocker">
             
             <div id="countiesListCont">
@@ -102,7 +106,7 @@
                     </div>
                       <div id="listCont">
                         <div class="topActionRow">
-                            <button class="smolGlowyButton">Print Results</button>
+                            <button class="smolGlowyButton" onclick="printResults()">Print Results</button>
                         </div>
                         <div id="rowsCont">
                         </div>
@@ -139,6 +143,7 @@
         <script>
                 const RESOURCES_URL = "realResources.json";
                 const COUNTIES_LIST_URL = "countyList.json";
+                const NUM_PRINT_RESULTS = 20; // How many results should be printed at a time.
 
                 var q;
                 var resources = [];
@@ -364,33 +369,33 @@
                     populateCurrentView();
                 }
 
+                function printResults() {
+                    let out = "";
+                    for (var i = 0; i < NUM_PRINT_RESULTS && i < resources.length; i++){
+                        var item = resources[i];
+                        out +=`
+                        <h4> ${item.agency_name}</h4>
+                        <p> Category ${item.taxonomy_category}</p>
+                        <p> City: ${item.city}</p>
+                        <p> Address: ${item.address_1}</p>
+                        <p> Zipcode: ${item.zipcode}</p>
+                        <p> Description: ${item.agency_desc}</p>
+                        <p> Contact: ${(item.service_website != null && item.service_website.length > 0 ? `<a href="${item.service_website}">${item.service_website}</a><br>` : "") + (item.service_email != null && item.service_email.length > 0 ? `<a href="mailto:${item.service_email}">${item.service_email}</a><br>` : "") + (item.site_number && item.site_number.length > 0 != null ? item.site_number : "")}</p>
+                        <p> Operating Hours: ${item.site_schedule}</p>
+                        <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
+                        <hr>`;
+                    }
+                    var printWindow = window.open('', '', 'width=600,height=600');
 
-                var i = 0;
-                let dot0 = "Loading";
-                let dot1 = "Loading.";
-                let dot2 = "Loading..";
-                let dot3 = "Loading...";
-setInterval(function() {
-   let message = "";
-   if (i ==0 ){
-    message = dot0;
-   }
-   if (i == 1){
-    message = dot1;
-   }
-   else if (i == 2){
-    message = dot2;
-   }
-   
-  else if (i ==3){
-    message = dot3;
-   }
-   
-   
-    i = i + 1;
-    document.querySelector("#load").innerHTML = `${message}`;
-    if (i == 4) i = 0;
-}, 1000);
+                    printWindow.document.open();
+                    printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></center>');
+                    
+                    printWindow.document.write(out);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                    printWindow.close();
+                }
             </script>
         </body>
     </html>
