@@ -33,6 +33,7 @@ async function generateData() {
     await fs.writeFile("public" + url, JSON.stringify(countyData[county]));
     countyURLS[displayName] = url;
   }
+  
   await fs.writeFile("public/countyList.json", JSON.stringify(countyURLS));
 }
 

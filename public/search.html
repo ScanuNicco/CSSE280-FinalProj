@@ -15,11 +15,15 @@
             <h1>Print this content</h1>
             <p>testtestsetsest</p>
         </div>
+        
         <div id="countyBlocker">
-            
+            <div id="loadLocation">
+                
+                </div>
             <div id="countiesListCont">
-             <p id="load"></p>
-             <div class="loader "></div>
+            
+            
+             
                 <input id="countySearch" placeholder="Select a County" oninput="displayCounties()"></input>
                 
                 <div id="countiesList">
@@ -153,10 +157,11 @@
                 var cats = {};
                 var filterZip = "";
                 var counties;
+                
 
                 window.onload = async function() {
                     await fetchCounties();
-
+                   
                     //Populate categories and results
                     html = "";
 
@@ -179,33 +184,53 @@
                 async function fetchCounties() {
                     var response = await fetch(COUNTIES_LIST_URL);
                     counties = await response.json();
+                    console.log(counties);
                     displayCounties();
                 }
 
                 function displayCounties() {
+               
                     document.getElementById("countyBlocker").style.display = "flex";
                     var query = document.getElementById("countySearch").value;
                     var html = "";
+                  
+                    
                     for(county in counties) {
                         if(query.length <= 0 || county.toLowerCase().includes(query.toLowerCase())) {
+                            
                             html += `<div class='county' onclick='selectCounty("${county}")'>${county}</div>`;
                         }
                     }
                     document.getElementById("countiesList").innerHTML = html;
+                  
                 }
 
                 async function selectCounty(county) {
+               
+             
+                    document.querySelector('#loadLocation').innerHTML = `<div class="loader "></div>`;
+                    document.querySelector('#countiesListCont').style.display = "none"
+
                     var response = await fetch(counties[county]);
+
                     resources = await response.json();
+                    document.querySelector('#loadLocation').innerHTML = ``;
+                  
+
+                    
+                    document.querySelector('#countiesListCont').style.display = "flex"
                     genCats();
                     resetFilter();
                     document.getElementById("countyBlocker").style.display = "none";
                     document.getElementById("countyDisplay").innerText = county;
+                    
+               
                 }
 
                 var listHTML;
                 function showList() {
-                    console.log("Hello");
+
+                    
                     listHTML = "";
                     displayResources(generateHTML);
                     if(listHTML == ""){ //There were no rides
@@ -385,7 +410,7 @@
                         <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
                         <hr>`;
                     }
-                    var printWindow = window.open('', '', 'width=600,height=600');
+                    var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
                     printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></center>');
