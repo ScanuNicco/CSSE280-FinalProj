@@ -262,13 +262,19 @@
                     }
                     string = words.join(" ");
                     if(string.length > 50) {
-                        return string.substring(0, 22) + "...";
+                        return string.substring(0, 47) + "...";
                     }
                     return string;
                 }
 
                 function passesFilters(res) {
-                    return cats[res.taxonomy_category].enabled && (res.zipcode == filterZip || filterZip.length != 5);
+                    var catsPass = false;
+                    for(itemCat of res.taxonomy_category){
+                        if(cats[itemCat].enabled){
+                            catsPass = true;
+                        }
+                    }
+                    return catsPass && (res.zipcode == filterZip || filterZip.length != 5);
                 }
 
                 function showDetails(res) {
@@ -286,9 +292,17 @@
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
-                    document.getElementById("hours").innerText = r.site_schedule;
+                    document.getElementById("hours").innerHTML = genSharedList(r.site_schedule);
                     document.getElementById("elgibility").innerText = r.site_eligibility ?? "All";
                     openModal();
+                }
+
+                function genSharedList(list) {
+                    var html = "";
+                    for (line of list) {
+                        html += `<b class='lineName'>${line.name}</b>: ${line.schedule}<br>`;
+                    }
+                    return html;
                 }
 
                 function closeModal() {
@@ -342,7 +356,7 @@
                         var coords = [res.latitude, res.longitude];
                         var marker = L.marker(coords).addTo(mlg);
                         marker.resInd = ind;
-                        marker._icon.style.filter = `hue-rotate(${cats[res.taxonomy_category].hue - 210}deg)`;
+                        marker._icon.style.filter = `hue-rotate(${cats[res.taxonomy_category[0]].hue - 210}deg)`;
                         oms.addMarker(marker);
                     }
                 }
@@ -369,8 +383,10 @@
 
                 function genCats() {
                     for(resource of resources) {
-                        if(!cats.hasOwnProperty(resource.taxonomy_category)){
-                            cats[resource.taxonomy_category] = {taxonCode: resource.taxonomy_code};
+                        for(var i = 0; i < resource.taxonomy_category.length; i++){
+                            if(!cats.hasOwnProperty(resource.taxonomy_category[i])){
+                                cats[resource.taxonomy_category[i]] = {taxonCode: resource.taxonomy_code[i]};
+                            }
                         }
                     }
                     //Now we know how many there are
@@ -406,7 +422,7 @@
                         <p> Zipcode: ${item.zipcode}</p>
                         <p> Description: ${item.agency_desc}</p>
                         <p> Contact: ${(item.service_website != null && item.service_website.length > 0 ? `<a href="${item.service_website}">${item.service_website}</a><br>` : "") + (item.service_email != null && item.service_email.length > 0 ? `<a href="mailto:${item.service_email}">${item.service_email}</a><br>` : "") + (item.site_number && item.site_number.length > 0 != null ? item.site_number : "")}</p>
-                        <p> Operating Hours: ${item.site_schedule}</p>
+                        <p> Operating Hours: ${genSharedList(item.site_schedule)}</p>
                         <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
                         <hr>`;
                     }
