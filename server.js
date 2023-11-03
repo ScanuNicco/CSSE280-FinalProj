@@ -1,6 +1,7 @@
 const BASE_PATH = "./public";
 const { promises: fs } = require('fs');
 const DATA_IN_LOCATION = "resources.json";
+const PORT = "8082";
 
 async function generateData() {
   console.log("Importing resources...");
@@ -12,11 +13,11 @@ async function generateData() {
     var existIndex = getIdInSorted(dedup, item.site_id, item.agency_id);
     if(existIndex < 0) {
       var newItem = item;
-      newItem.site_elgibility = [item.site_elgibility];
+      newItem.site_eligibility = [item.site_eligibility];
+      newItem.site_schedule = [{name: item.taxonomy_name, schedule: item.site_schedule}];
       newItem.taxonomy_category = [item.taxonomy_category];
       newItem.taxonomy_code = [item.taxonomy_code];
       newItem.taxonomy_name = [item.taxonomy_name];
-      newItem.site_schedule = [item.site_schedule];
       newItem.nameLevel2 = [item.nameLevel2];
       newItem.nameLevel3 = [item.nameLevel3];
       newItem.nameLevel4 = [item.nameLevel4];
@@ -24,15 +25,15 @@ async function generateData() {
       dedup.push(newItem);
     } else {
       var exItem = dedup[existIndex];
-      exItem.site_elgibility.push(item.site_elgibility);
-      exItem.site_schedule.push(item.site_schedule);
-      exItem.taxonomy_category.push(item.taxonomy_category);
-      exItem.taxonomy_code.push(item.taxonomy_code);
-      exItem.taxonomy_name.push(item.taxonomy_name);
-      exItem.nameLevel2.push(item.nameLevel2);
-      exItem.nameLevel3.push(item.nameLevel3);
-      exItem.nameLevel4.push(item.nameLevel4);
-      exItem.nameLevel5.push(item.nameLevel5);
+      exItem.site_eligibility.pushIfNotExist(item.site_eligibility);
+      exItem.site_schedule.pushIfNotExist({name: item.taxonomy_name, schedule: item.site_schedule});
+      exItem.taxonomy_category.pushIfNotExist(item.taxonomy_category);
+      exItem.taxonomy_code.pushIfNotExist(item.taxonomy_code);
+      exItem.taxonomy_name.pushIfNotExist(item.taxonomy_name);
+      exItem.nameLevel2.pushIfNotExist(item.nameLevel2);
+      exItem.nameLevel3.pushIfNotExist(item.nameLevel3);
+      exItem.nameLevel4.pushIfNotExist(item.nameLevel4);
+      exItem.nameLevel5.pushIfNotExist(item.nameLevel5);
     }
   }
   console.log("Sorting by county...")
@@ -77,17 +78,26 @@ function getIdInSorted(dedup, siteId, agencyId) {
   return -1;
 }
 
+Array.prototype.pushIfNotExist = function(element) { 
+  if (this.indexOf(element) < 0) {
+      this.push(element);
+  }
+}; 
 
-Bun.serve({
-  port: 8082,
-  async fetch(req) {
-    const filePath = BASE_PATH + new URL(req.url).pathname;
-    const file = Bun.file(filePath);
-    return new Response(file);
-  },
-  error() {
-    return new Response(null, { status: 404 });
-  },
-});
 
-//generateData();
+if(Bun.argv.indexOf("--genData") >= 0){
+  generateData();
+} else {
+  console.log("Serving on port " + PORT + ".")
+  Bun.serve({
+    port: PORT,
+    async fetch(req) {
+      const filePath = BASE_PATH + new URL(req.url).pathname;
+      const file = Bun.file(filePath);
+      return new Response(file);
+    },
+    error() {
+      return new Response(null, { status: 404 });
+    },
+  });
+}
