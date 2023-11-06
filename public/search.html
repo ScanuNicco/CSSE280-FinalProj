@@ -140,7 +140,12 @@
                 </table>
                 <a id="gmLink" target="_blank">
                     <button class="bigGlowyButton">Directions</button>
+                    
                 </a>
+                
+                <button onclick = simplePrint() class="bigGlowyButton"  >Print Info</button>
+            
+           
             </div>
         </div>
         <script src="/fullcalendar/dist/index.global.min.js"></script>
@@ -160,7 +165,7 @@
                 var cats = {};
                 var filterZip = "";
                 var counties;
-                
+                var currentCounty;
 
                 window.onload = async function() {
                     await fetchCounties();
@@ -302,6 +307,8 @@
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
+                    
+                    currentCounty = r;
                     document.getElementById("hours").innerHTML = genSharedList(r.site_schedule);
                     document.getElementById("elgibility").innerText = r.site_eligibility ?? "All";
                     openModal();
@@ -432,6 +439,8 @@
                     populateCurrentView();
                 }
 
+
+
                 function printResults() {
                     let out = "";
                   
@@ -468,6 +477,42 @@
                     printWindow.print();
                     printWindow.close();
                     
+                }
+
+                function simplePrint(){
+                    let out = "";
+                  
+                  
+                            var item =  currentCounty;
+                       
+                        
+                       
+                        out +=`
+                        <h4> ${item.agency_name}</h4>
+                        <p> Category ${item.taxonomy_category}</p>
+                        <p> City: ${item.city}</p>
+                        <p> Address: ${item.address_1}</p>
+                        <p> Zipcode: ${item.zipcode}</p>
+                        <p> Description: ${item.agency_desc}</p>
+                        <p> Contact: ${(item.service_website != null && item.service_website.length > 0 ? `<a href="${item.service_website}">${item.service_website}</a><br>` : "") + (item.service_email != null && item.service_email.length > 0 ? `<a href="mailto:${item.service_email}">${item.service_email}</a><br>` : "") + (item.site_number && item.site_number.length > 0 != null ? item.site_number : "")}</p>
+                        <p> Operating Hours: ${genSharedList(item.site_schedule)}</p>
+                        <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
+                        <hr>`;
+                    
+                
+                const d = new Date();
+                    var printWindow = window.open('', '', 'width=1000,height=600');
+
+                    printWindow.document.open();
+                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
+                    
+                    printWindow.document.write(out);
+                    printWindow.document.write('</body><footer></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                    printWindow.close();
+                    
+                 
                 }
             </script>
         </body>
