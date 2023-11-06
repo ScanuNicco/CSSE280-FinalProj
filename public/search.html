@@ -10,7 +10,9 @@
 	    <meta name="description" content="Search for a service.">
     </head>
     <body>
+        
         <div id="contentToPrint" style="display: none;">
+          
             <!-- This is the content you want to print -->
             <h1>Print this content</h1>
             <p>testtestsetsest</p>
@@ -233,8 +235,8 @@
                     
                     listHTML = "";
                     displayResources(generateHTML);
-                    if(listHTML == ""){ //There were no rides
-                            listHTML = "<div id='lhCont'><img src='noRides.svg' class='lighthouse'></img></div>";
+                    if(listHTML == ""){ //The list is blank
+                            listHTML = "<div id='lhCont'><img src='noResults.png' width='100' height='100' class='lighthouse'></img></div>";
                     }
                     document.getElementById("rowsCont").innerHTML = listHTML;
                     console.log("Hello");
@@ -429,7 +431,7 @@
                     var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
-                    printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></center>');
+                    printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
                     
                     printWindow.document.write(out);
                     printWindow.document.write('</body></html>');
