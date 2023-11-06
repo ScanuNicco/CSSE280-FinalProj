@@ -55,6 +55,7 @@
                 </div> -->
             </div>
             <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
+            <button class="bigGlowyButton" onclick="uncheckFilter()">UnCheck</button>
         </div>
             <div id="rideViewsCont">
                 <!-- <div id="homeCont">
@@ -186,7 +187,14 @@
                 async function fetchCounties() {
                     var response = await fetch(COUNTIES_LIST_URL);
                     counties = await response.json();
-                    console.log(counties);
+                 
+                    var keys = Object.keys(counties);
+                    keys.sort();
+                    var sortedCounties = {};
+                    for (const key of keys) {
+                        sortedCounties[key] = counties[key];
+                    }
+                    counties =  sortedCounties;
                     displayCounties();
                 }
 
@@ -328,6 +336,17 @@
                     populateCurrentView();
                 }
 
+                function uncheckFilter() {
+                    var boxes = document.getElementById("mainFilterList").querySelectorAll("input[type=checkbox]"); 
+                    for(box in boxes) {
+                        boxes[box].checked = false;
+                    }
+                    for(cat in cats) {
+                        cats[cat].enabled = false;
+                    }
+                    populateCurrentView();
+                }
+
                 var views = [{id: "homeCont", setup: showHome}, {id: "listCont", setup: showList}, {id: "mapCont", setup: showMap}]; //Add view IDs to this list in the order the appear in the selector
                 var currentView = 0;
                 function showView(id) {
@@ -344,6 +363,7 @@
 
                 function populateCurrentView() {
                     views[currentView].setup();
+                   
                 }
 
                 function showMap() {
@@ -414,8 +434,15 @@
 
                 function printResults() {
                     let out = "";
+                  
                     for (var i = 0; i < NUM_PRINT_RESULTS && i < resources.length; i++){
-                        var item = resources[i];
+                        
+                        if(passesFilters(resources[i])&& i<1500){
+                         
+                            var item =  resources[i];
+                       
+                        
+                       
                         out +=`
                         <h4> ${item.agency_name}</h4>
                         <p> Category ${item.taxonomy_category}</p>
@@ -428,16 +455,19 @@
                         <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
                         <hr>`;
                     }
+                }
+                const d = new Date();
                     var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
-                    printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
+                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
                     
                     printWindow.document.write(out);
-                    printWindow.document.write('</body></html>');
+                    printWindow.document.write('</body><footer></html>');
                     printWindow.document.close();
                     printWindow.print();
                     printWindow.close();
+                    
                 }
             </script>
         </body>
