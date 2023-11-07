@@ -448,12 +448,13 @@
 
                 function printResults() {
                     let out = "";
-                  
-                    for (var i = 0; i < NUM_PRINT_RESULTS && i < resources.length; i++){
+                    var count = 0;
+                    for (var i = 0; i < resources.length; i++){
                         
-                        if(passesFilters(resources[i])&& i<1500){
-                         
-                            var item =  resources[i];
+                        if(passesFilters(resources[i])&& count< NUM_PRINT_RESULTS){
+                            
+                            count = count + 1;
+                             item =  resources[i];
                        
                         
                        
