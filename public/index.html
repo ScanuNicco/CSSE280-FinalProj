@@ -15,7 +15,7 @@
           
             <!-- This is the content you want to print -->
             <h1>Print this content</h1>
-            <p>testtestsetsest</p>
+            <p></p>
         </div>
         
         <div id="countyBlocker">
@@ -46,17 +46,20 @@
             <div id="filterCont" onclick="populateCurrentView()">
             <h2>Filter Results</h2>
             <div class="zipBox">
-                <button><img src="location.svg"></button><input id="zipIn" placeholder="Zip Code" oninput="filterZip = this.value; populateCurrentView();">
+                <input id="zipIn" placeholder="Zip Code" oninput="filterZip = this.value; populateCurrentView();">
             </div>
-            <div class="filtersList" id="mainFilterList">
-                <!-- <div class="filterRow">
-                    <input type="checkBox">
-                    <span>Food Bank</span>
-                </div> -->
+            <div class="filtersListCont">
+                <input class="filterSearch" placeholder="Search Categories" oninput="filterCats(this)">
+                <div class="filtersList" id="mainFilterList">
+                    <!-- <div class="filterRow">
+                        <input type="checkBox">
+                        <span>Food Bank</span>
+                    </div> -->
+                </div>
             </div>
             <div class="button-group">
             <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
-            <button class="bigGlowyButton" onclick="uncheckFilter()">Uncheck</button>
+            <button class="bigGlowyButton" onclick="uncheckFilter()" id="uncheck">Uncheck</button>
             </div>
         </div>
             <div id="rideViewsCont">
@@ -224,7 +227,7 @@
 
                 async function selectCounty(county) {
                
-             
+                    currentCounty = county;
                     document.querySelector('#loadLocation').innerHTML = `<div class="loader "></div>`;
                     document.querySelector('#countiesListCont').style.display = "none"
 
@@ -287,7 +290,7 @@
 
                 function passesFilters(res) {
                     var catsPass = false;
-                    for(itemCat of res.taxonomy_category){
+                    for(itemCat of res.nameLevel2){
                         if(cats[itemCat].enabled){
                             catsPass = true;
                         }
@@ -354,14 +357,17 @@
                     populateCurrentView();
                 }
 
+                var currentlyChecked = true;
                 function uncheckFilter() {
                     var boxes = document.getElementById("mainFilterList").querySelectorAll("input[type=checkbox]"); 
                     for(box in boxes) {
-                        boxes[box].checked = false;
+                        boxes[box].checked = !currentlyChecked;
                     }
                     for(cat in cats) {
-                        cats[cat].enabled = false;
+                        cats[cat].enabled = !currentlyChecked;
                     }
+                    currentlyChecked = !currentlyChecked;
+                    document.getElementById("uncheck").innerText = currentlyChecked ? "Uncheck All" : "Check All";
                     populateCurrentView();
                 }
 
@@ -396,7 +402,7 @@
                         var coords = [res.latitude, res.longitude];
                         var marker = L.marker(coords).addTo(mlg);
                         marker.resInd = ind;
-                        marker._icon.style.filter = `hue-rotate(${cats[res.taxonomy_category[0]].hue - 210}deg)`;
+                        marker._icon.style.filter = `hue-rotate(${cats[res.nameLevel2[0]].hue - 210}deg)`;
                         oms.addMarker(marker);
                     }
                 }
@@ -423,10 +429,10 @@
 
                 function genCats() {
                     for(resource of resources) {
-                        for(var i = 0; i < resource.taxonomy_category.length; i++){
-                            if(!cats.hasOwnProperty(resource.taxonomy_category[i])){
+                        for(var i = 0; i < resource.nameLevel2.length; i++){
+                            if(!cats.hasOwnProperty(resource.nameLevel2[i])){
                                
-                                cats[resource.taxonomy_category[i]] = {taxonCode: resource.taxonomy_code[i]};
+                                cats[resource.nameLevel2[i]] = {taxonCode: resource.taxonomy_code[i]};
                             }
                         }
                     }
@@ -442,6 +448,22 @@
                                     <input type="checkBox" style="--ck-inactive-color: hsl(${i*colorJump}, 20%, 50%); --ck-active-color: hsl(${i*colorJump}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}')">
                                     <span>${cat.replaceAll("/", "/ ")}</span>
                                 </div>`;
+                    }
+                    document.getElementById("mainFilterList").innerHTML = html;
+                }
+
+                function filterCats(elem) {
+                    console.log(elem.value);
+                    var html = "";
+                    var catKeys = Object.keys(cats)
+                     for(var i = 0; i < catKeys.length; i++) {
+                        var cat = catKeys[i];
+                        if(cat.toLowerCase().includes(elem.value.toLowerCase()) || elem.value.length == 0){
+                            html += `<div class="filterRow">
+                                        <input type="checkBox" style="--ck-inactive-color: hsl(${cats[cat].hue}, 20%, 50%); --ck-active-color: hsl(${cats[cat].hue}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}')" ${cats[cat].enabled ? "checked": ""}>
+                                        <span>${cat.replaceAll("/", "/ ")}</span>
+                                    </div>`;
+                        }
                     }
                     document.getElementById("mainFilterList").innerHTML = html;
                 }
@@ -466,7 +488,7 @@
                         
                        
                         out +=`
-                        <h4> ${item.agency_name}</h4>
+                        <h4> ${formatNames(item.agency_name)}</h4>
                         <p> Category ${item.taxonomy_category}</p>
                         <p> City: ${item.city}</p>
                         <p> Address: ${item.address_1}</p>
@@ -482,7 +504,18 @@
                     var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
-                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
+                    printWindow.document.write(`<html><head><title>Indiana 211 resource data as of ${d}</title></head><body><center><img style="width: 30vw" src="logo.png"></img><h2>Services in ${currentCounty}</h2></center><style>
+                            body {
+                                font-family: sans;
+                                font-size: 11pt;
+                            }
+                            h4 {
+                                font-size: 16pt;
+                            }
+                            h2 {
+                                font-size: 20pt;
+                            }
+                            </style>`);
                     
                     printWindow.document.write(out);
                     printWindow.document.write('</body><footer></html>');
@@ -517,7 +550,7 @@
                     var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
-                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
+                    printWindow.document.write(`<html><head><title>Indiana 211 resource data as of ${d}</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>`);
                     
                     printWindow.document.write(out);
                     printWindow.document.write('</body><footer></html>');

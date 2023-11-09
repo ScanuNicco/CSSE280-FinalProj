@@ -312,3 +312,12 @@
   margin: 10px !important;
   gap: 10px;
   }
+
+  .button-group button, .button-group a {
+    width: 100%;
+  }
+
+  #modal .button-group {
+  width: 70%;
+  margin: 15px auto !important;
+}

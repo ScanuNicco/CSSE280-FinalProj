@@ -405,12 +405,26 @@
                 }
 
                 .filtersList {
-                    background: #ccc;
-                    border-radius: 10px;
-                    padding: 10px;
                     overflow-y: auto;
                     flex-shrink: 1;
+                    padding: 10px;
+                }
+
+                .filtersListCont {
+                    background: #ccc;
+                    border-radius: 10px;
+                    flex-shrink: 1;
                     margin-top: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                }
+
+                .filterSearch {
+                    border: none;
+                    font-size: 14pt;
+                    padding: 10px;
+                    background: #bbb;
                 }
 
                 .welcomeImg {
