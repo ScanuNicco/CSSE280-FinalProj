@@ -86,23 +86,6 @@
                     min-width: 0px;
                 }
 
-                .rideCard {
-                    background: #2f2f2f;
-                    margin: 10px;
-                    border-radius: 5px;
-                    display: flex;
-                    transition-duration: .5s;
-                    height: 200px;
-                    min-height: min-content;
-                    overflow: hidden;
-                    transition: ease-in-out .2s;
-                    width: max-content;
-                }
-
-                .rideCard:hover {
-                    transform: scale(1.03);
-                }
-
                 .leftCol, .rightCol {
                     flex-direction: column;
                     display: inline-flex;
@@ -118,18 +101,6 @@
 
                 .leftCol img {
                     border-radius: 5px;
-                }
-
-                .rideCard h2 {
-                    margin: 0px 0px 10px 0px !important;
-                }
-
-                .rideCard h4, .rideCard h3, .rideCard span {
-                    margin: 5px 0px !important;
-                }
-
-                .rideCard span {
-                    display: block;
                 }
 
                 #modalBackground {
@@ -285,10 +256,6 @@
                 }
                 .active {
                     background: #539ED0;
-                }
-
-                img.active {
-                    
                 }
 
                 img.offerPin {

@@ -34,14 +34,14 @@
             </div>
         </div>
         <div class="headerBar">
-            <a href="/"><img src="logo.png"></a><div id="countyDisplay" onclick="displayCounties()">County</div>
+            <a href="/"><img src="logo.png"></a><div id="countyDisplay" onclick="displayCounties()" class="clickable">County</div>
         </div>
         <div id="outerFilterCont">
             <div id="viewSelector">
-                <img class="active" src="home.svg" onclick="showView(0)">
-                <img src="list.svg" onclick="showView(1)" class="">
-                <img src="map.svg" onclick="showView(2)">
-                <img id="filterButton" src="filter.svg" onclick="toggleFilter()">
+                <img class="active" src="home.svg" onclick="showView(0)" class="clickable">
+                <img src="list.svg" onclick="showView(1)" class="clickable">
+                <img src="map.svg" onclick="showView(2)" class="clickable">
+                <img id="filterButton" src="filter.svg" onclick="toggleFilter()" class="clickable">
             </div>
             <div id="filterCont" onclick="populateCurrentView()">
             <h2>Filter Results</h2>
@@ -218,7 +218,7 @@
                     for(county in counties) {
                         if(query.length <= 0 || county.toLowerCase().includes(query.toLowerCase())) {
                             
-                            html += `<div class='county' onclick='selectCounty("${county}")'>${county}</div>`;
+                            html += `<div class='county clickable' onclick='selectCounty("${county}")'>${county}</div>`;
                         }
                     }
                     document.getElementById("countiesList").innerHTML = html;
@@ -254,7 +254,7 @@
                     listHTML = "";
                     displayResources(generateHTML);
                     if(listHTML == ""){ //The list is blank
-                            listHTML = "<div id='lhCont'><img src='noResults.png' width='100' height='100' class='lighthouse'></img></div>";
+                            listHTML = "<div id='lhCont'><p>No results found! Try using different filters or searching in a different county or zip code.</p><img src='noResults.png' width='100' height='100' class='lighthouse'></img></div>";
                     }
                     document.getElementById("rowsCont").innerHTML = listHTML;
                     console.log("Hello");
@@ -443,7 +443,7 @@
                         cats[cat].color = `hsl(${i*colorJump}, 62%, 60.8%)`;
                         cats[cat].hue = i*colorJump;
                         html += `<div class="filterRow">
-                                    <input type="checkBox" style="--ck-inactive-color: hsl(${i*colorJump}, 20%, 50%); --ck-active-color: hsl(${i*colorJump}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}')">
+                                    <input type="checkBox" style="--ck-inactive-color: hsl(${i*colorJump}, 20%, 50%); --ck-active-color: hsl(${i*colorJump}, 62%, 60.8%);" onclick="toggleCategory(this, '${cat}') " class='clickable'>
                                     <span>${cat.replaceAll("/", "/ ")}</span>
                                 </div>`;
                     }

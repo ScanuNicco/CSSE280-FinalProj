@@ -44,9 +44,13 @@
                     line-height: 1.2;
                 }
 
-                .bigGlowyButton {
-                    /* width: 70%; */
+                .clickable {
+                  cursor: pointer;
                 }
+
+                /* .bigGlowyButton {
+                    width: 70%;
+                } */
 
                 .smolGlowyButton, .bigGlowyButton {
                     /* margin: 20px 15% 20px 15%; */
