@@ -314,8 +314,6 @@
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
-                    
-                    currentCounty = r;
                     document.getElementById("hours").innerHTML = genSharedList(r.site_schedule);
                     document.getElementById("elgibility").innerText = r.site_eligibility ?? "All";
                     openModal();
