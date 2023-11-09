@@ -10,7 +10,9 @@
 	    <meta name="description" content="Search for a service.">
     </head>
     <body>
+        
         <div id="contentToPrint" style="display: none;">
+          
             <!-- This is the content you want to print -->
             <h1>Print this content</h1>
             <p>testtestsetsest</p>
@@ -52,7 +54,8 @@
                     <span>Food Bank</span>
                 </div> -->
             </div>
-            <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
+            <button class="bigGlowyButton" onclick="resetFilter()">Enable All</button>
+            <button class="bigGlowyButton" onclick="uncheckFilter()">Disable All</button>
         </div>
             <div id="rideViewsCont">
                 <!-- <div id="homeCont">
@@ -137,11 +140,14 @@
                 </table>
                 <a id="gmLink" target="_blank">
                     <button class="bigGlowyButton">Directions</button>
+                    
                 </a>
+                
+                <button onclick = simplePrint() class="bigGlowyButton"  >Print Info</button>
+            
+           
             </div>
         </div>
-        <script src="/fullcalendar/dist/index.global.min.js"></script>
-        <script src="shared.js"></script>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
         <script>
@@ -157,7 +163,7 @@
                 var cats = {};
                 var filterZip = "";
                 var counties;
-                
+                var currentCounty;
 
                 window.onload = async function() {
                     await fetchCounties();
@@ -184,7 +190,14 @@
                 async function fetchCounties() {
                     var response = await fetch(COUNTIES_LIST_URL);
                     counties = await response.json();
-                    console.log(counties);
+                 
+                    var keys = Object.keys(counties);
+                    keys.sort();
+                    var sortedCounties = {};
+                    for (const key of keys) {
+                        sortedCounties[key] = counties[key];
+                    }
+                    counties =  sortedCounties;
                     displayCounties();
                 }
 
@@ -233,8 +246,8 @@
                     
                     listHTML = "";
                     displayResources(generateHTML);
-                    if(listHTML == ""){ //There were no rides
-                            listHTML = "<div id='lhCont'><img src='noRides.svg' class='lighthouse'></img></div>";
+                    if(listHTML == ""){ //The list is blank
+                            listHTML = "<div id='lhCont'><img src='noResults.png' width='100' height='100' class='lighthouse'></img></div>";
                     }
                     document.getElementById("rowsCont").innerHTML = listHTML;
                     console.log("Hello");
@@ -292,6 +305,8 @@
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
                     document.getElementById("gmLink").href = `https://www.google.com/maps/place/${addrString}`;
+                    
+                    currentCounty = r;
                     document.getElementById("hours").innerHTML = genSharedList(r.site_schedule);
                     document.getElementById("elgibility").innerText = r.site_eligibility ?? "All";
                     openModal();
@@ -313,6 +328,13 @@
                 function openModal() {
                     document.getElementById("modalBackground").style.top = "0vh";
                     document.getElementById("modalBackground").style.borderRadius = "0px";
+                    document.addEventListener('keydown', closeModalOnKey);
+                }
+
+                function closeModalOnKey() {
+                    if(event.key === 'Escape') {
+                            closeModal();
+                        }
                 }
 
                 function resetFilter() {
@@ -322,6 +344,17 @@
                     }
                     for(cat in cats) {
                         cats[cat].enabled = true;
+                    }
+                    populateCurrentView();
+                }
+
+                function uncheckFilter() {
+                    var boxes = document.getElementById("mainFilterList").querySelectorAll("input[type=checkbox]"); 
+                    for(box in boxes) {
+                        boxes[box].checked = false;
+                    }
+                    for(cat in cats) {
+                        cats[cat].enabled = false;
                     }
                     populateCurrentView();
                 }
@@ -342,6 +375,7 @@
 
                 function populateCurrentView() {
                     views[currentView].setup();
+                   
                 }
 
                 function showMap() {
@@ -410,10 +444,20 @@
                     populateCurrentView();
                 }
 
+
+
                 function printResults() {
                     let out = "";
-                    for (var i = 0; i < NUM_PRINT_RESULTS && i < resources.length; i++){
-                        var item = resources[i];
+                    var count = 0;
+                    for (var i = 0; i < resources.length; i++){
+                        
+                        if(passesFilters(resources[i])&& count< NUM_PRINT_RESULTS){
+                            
+                            count = count + 1;
+                             item =  resources[i];
+                       
+                        
+                       
                         out +=`
                         <h4> ${item.agency_name}</h4>
                         <p> Category ${item.taxonomy_category}</p>
@@ -426,16 +470,55 @@
                         <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
                         <hr>`;
                     }
+                }
+                const d = new Date();
                     var printWindow = window.open('', '', 'width=1000,height=600');
 
                     printWindow.document.open();
-                    printWindow.document.write('<html><head><title>Printed Page</title></head><body><center><img style="width: 30vw" src="logo.png"></center>');
+                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
                     
                     printWindow.document.write(out);
-                    printWindow.document.write('</body></html>');
+                    printWindow.document.write('</body><footer></html>');
                     printWindow.document.close();
                     printWindow.print();
                     printWindow.close();
+                    
+                }
+
+                function simplePrint(){
+                    let out = "";
+                  
+                  
+                            var item =  currentCounty;
+                       
+                        
+                       
+                        out +=`
+                        <h4> ${item.agency_name}</h4>
+                        <p> Category ${item.taxonomy_category}</p>
+                        <p> City: ${item.city}</p>
+                        <p> Address: ${item.address_1}</p>
+                        <p> Zipcode: ${item.zipcode}</p>
+                        <p> Description: ${item.agency_desc}</p>
+                        <p> Contact: ${(item.service_website != null && item.service_website.length > 0 ? `<a href="${item.service_website}">${item.service_website}</a><br>` : "") + (item.service_email != null && item.service_email.length > 0 ? `<a href="mailto:${item.service_email}">${item.service_email}</a><br>` : "") + (item.site_number && item.site_number.length > 0 != null ? item.site_number : "")}</p>
+                        <p> Operating Hours: ${genSharedList(item.site_schedule)}</p>
+                        <p> Elgibility: ${item.site_eligibility ?? "All"}</p>
+                        <hr>`;
+                    
+                
+                const d = new Date();
+                    var printWindow = window.open('', '', 'width=1000,height=600');
+
+                    printWindow.document.open();
+                    printWindow.document.write('<html><head><title>Indiana 211 resource data as of '  + d +  '</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>');
+                    
+                    printWindow.document.write(out);
+                    printWindow.document.write('</body><footer></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                    printWindow.close();
+                    
+                 
                 }
             </script>
         </body>
