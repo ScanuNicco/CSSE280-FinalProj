@@ -101,7 +101,8 @@ if(Bun.argv.indexOf("--genData") >= 0){
   Bun.serve({
     port: PORT,
     async fetch(req) {
-      const filePath = BASE_PATH + new URL(req.url).pathname;
+      const filePath = BASE_PATH + (new URL(req.url).pathname == "/" ? "/index.html" : new URL(req.url).pathname);
+      console.log(filePath);
       const file = Bun.file(filePath);
       return new Response(file);
     },

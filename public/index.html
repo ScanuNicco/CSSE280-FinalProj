@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Search | Indiana 211</title>
-        <link rel="icon" href="slowlane.png"></link>
+        <link rel="icon" href="icon.png"></link>
         <link rel="stylesheet" href="styles.css"></link>
         <link rel="stylesheet" href="search.css"></link>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></link>
@@ -152,8 +152,6 @@
            
             </div>
         </div>
-        <script src="/fullcalendar/dist/index.global.min.js"></script>
-        <script src="shared.js"></script>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
         <script>
@@ -336,6 +334,13 @@
                 function openModal() {
                     document.getElementById("modalBackground").style.top = "0vh";
                     document.getElementById("modalBackground").style.borderRadius = "0px";
+                    document.addEventListener('keydown', closeModalOnKey);
+                }
+
+                function closeModalOnKey() {
+                    if(event.key === 'Escape') {
+                            closeModal();
+                        }
                 }
 
                 function resetFilter() {
