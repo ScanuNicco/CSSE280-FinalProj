@@ -54,8 +54,10 @@
                     <span>Food Bank</span>
                 </div> -->
             </div>
+            <div class="button-group">
             <button class="bigGlowyButton" onclick="resetFilter()">Reset</button>
-            <button class="bigGlowyButton" onclick="uncheckFilter()">UnCheck</button>
+            <button class="bigGlowyButton" onclick="uncheckFilter()">Uncheck</button>
+            </div>
         </div>
             <div id="rideViewsCont">
                 <!-- <div id="homeCont">
@@ -138,13 +140,15 @@
                     <tr><td class="label">Operating Hours:</td><td id="hours"></td></tr>
                     <tr><td class="label">Target Group:</td><td id="elgibility"></td></tr>
                 </table>
+                <div class="button-group">
                 <a id="gmLink" target="_blank">
                     <button class="bigGlowyButton">Directions</button>
                     
                 </a>
-                
+                <a>
                 <button onclick = simplePrint() class="bigGlowyButton"  >Print Info</button>
-            
+            </a>
+                </div>
            
             </div>
         </div>
@@ -260,6 +264,7 @@
                 }
 
                 function displayResources(handler) {
+                    
                     for(var ind = 0; ind < resources.length; ind++) {
                         if(passesFilters(resources[ind]) && ind < 1500){
                             handler(ind, resources[ind]);
@@ -303,6 +308,7 @@
                         document.getElementById("gmLink").style.display = "initial";
                     }
                     document.getElementById("addr").innerText = addrString;
+                    
                     document.getElementById("cat").innerText = r.taxonomy_category;
                     document.getElementById("desc").innerText = r.agency_desc;
                     document.getElementById("contact").innerHTML = (r.service_website != null && r.service_website.length > 0 ? `<a href="${r.service_website}">${r.service_website}</a><br>` : "") + (r.service_email != null && r.service_email.length > 0 ? `<a href="mailto:${r.service_email}">${r.service_email}</a><br>` : "") + (r.site_number && r.site_number.length > 0 != null ? r.site_number : "");
@@ -414,6 +420,7 @@
                     for(resource of resources) {
                         for(var i = 0; i < resource.taxonomy_category.length; i++){
                             if(!cats.hasOwnProperty(resource.taxonomy_category[i])){
+                               
                                 cats[resource.taxonomy_category[i]] = {taxonCode: resource.taxonomy_code[i]};
                             }
                         }

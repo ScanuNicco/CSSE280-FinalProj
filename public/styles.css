@@ -17,6 +17,7 @@
                     border-radius: 5px;
                     transition-duration: .3s;
                     min-width: max-content;
+                   
                 }
 
                 .headerBar input, #fancyHeader input {
@@ -44,11 +45,11 @@
                 }
 
                 .bigGlowyButton {
-                    width: 70%;
+                    /* width: 70%; */
                 }
 
                 .smolGlowyButton, .bigGlowyButton {
-                    margin: 20px 15% 20px 15%;
+                    /* margin: 20px 15% 20px 15%; */
                     padding: 15px;
                     font-size: 13pt;
                     background: #a64dff !important;
@@ -302,4 +303,11 @@
   position: fixed;
   
   top: 0;
+  }
+  .button-group{
+    display: flex;
+    align-items: center ;
+  justify-content: center ;
+  margin: 10px !important;
+  gap: 10px;
   }

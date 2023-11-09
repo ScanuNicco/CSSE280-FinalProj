@@ -10,12 +10,16 @@ async function generateData() {
   var dedup = [];
   console.log("Merging duplicates...")
   for(item of data){ //Deduplicate data
+     
     var existIndex = getIdInSorted(dedup, item.site_id, item.agency_id);
     if(existIndex < 0) {
       var newItem = item;
       newItem.site_eligibility = [item.site_eligibility];
+     
       newItem.site_schedule = [{name: item.taxonomy_name, schedule: item.site_schedule}];
+      
       newItem.taxonomy_category = [item.taxonomy_category];
+     
       newItem.taxonomy_code = [item.taxonomy_code];
       newItem.taxonomy_name = [item.taxonomy_name];
       newItem.nameLevel2 = [item.nameLevel2];
@@ -26,10 +30,14 @@ async function generateData() {
     } else {
       var exItem = dedup[existIndex];
       exItem.site_eligibility.pushIfNotExist(item.site_eligibility);
+     
       exItem.site_schedule.pushIfNotExist({name: item.taxonomy_name, schedule: item.site_schedule});
+     
       exItem.taxonomy_category.pushIfNotExist(item.taxonomy_category);
       exItem.taxonomy_code.pushIfNotExist(item.taxonomy_code);
+    
       exItem.taxonomy_name.pushIfNotExist(item.taxonomy_name);
+     
       exItem.nameLevel2.pushIfNotExist(item.nameLevel2);
       exItem.nameLevel3.pushIfNotExist(item.nameLevel3);
       exItem.nameLevel4.pushIfNotExist(item.nameLevel4);
