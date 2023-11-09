@@ -104,7 +104,12 @@ if(Bun.argv.indexOf("--genData") >= 0){
       const filePath = BASE_PATH + (new URL(req.url).pathname == "/" ? "/index.html" : new URL(req.url).pathname);
       console.log(filePath);
       const file = Bun.file(filePath);
-      return new Response(file);
+      var res = new Response(file);
+      if(file.type.includes("json")){
+        console.log("Disabling CORS on this json file")
+        res.headers.set('Access-Control-Allow-Origin', '*');
+      }
+      return res;
     },
     error() {
       return new Response(null, { status: 404 });
