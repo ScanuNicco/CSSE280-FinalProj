@@ -110,7 +110,7 @@
                             <img src="homepage_filter.svg"  style="background: rgb(190, 185, 223);">
                         </div>
                         <div class="intro-text">
-                            <h2>Refine you Search</h2>
+                            <h2>Refine your Search</h2>
                             <span>Use filters to narrow your results to specific locations or categories.</span><br>
                             <button class="smolGlowyButton" onclick="showView(2); toggleFilter();">Open Filters</button>
                         </div>
@@ -551,7 +551,7 @@
                     printWindow.document.write(`<html><head><title>Indiana 211 resource data as of ${d}</title></head><body><center><img style="width: 30vw" src="logo.png"></img></center>`);
                     
                     printWindow.document.write(out);
-                    printWindow.document.write('</body><footer></html>');
+                    printWindow.document.write(`<p>As of ${d} the list provided is the most up-to-date information available to Indiana 211 for the types and locations of resources selected. Note that resource updates are made regularly and it is best to go back to the source of truth for updated information.</p></body><footer></html>`);
                     printWindow.document.close();
                     printWindow.print();
                     printWindow.close();
